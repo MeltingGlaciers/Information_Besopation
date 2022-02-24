@@ -1,5 +1,0 @@
-﻿  Feistel.cpp
-D:\programulki\Feistel\Feistel\Feistel\Feistel.cpp(67,9): warning C4244: return: преобразование "unsigned __int64" в "unsigned int", возможна потеря данных
-D:\programulki\Feistel\Feistel\Feistel\Feistel.cpp(74,13): warning C4244: инициализация: преобразование "unsigned __int64" в "unsigned int", возможна потеря данных
-D:\programulki\Feistel\Feistel\Feistel\Feistel.cpp(97,13): warning C4244: инициализация: преобразование "unsigned __int64" в "unsigned int", возможна потеря данных
-  Feistel.vcxproj -> D:\programulki\Feistel\Feistel\Debug\Feistel.exe
