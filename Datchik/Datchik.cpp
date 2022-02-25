@@ -5,6 +5,8 @@
 #include <cmath>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <map>
+#include <vector>
 //#define M_PI
 using namespace std;
 
@@ -28,6 +30,40 @@ double generetor(double z0, double R0, int n,int iter) {
     }
 
     return currR;
+}
+
+vector<int> find_l(double z0, double R0, int n) {
+
+    vector<int> resL;
+
+    double prevR = R0;
+    double currR;
+    double currZ;
+    double prevZ = z0;
+    double temp = 0;
+    map<float, int> map;
+    int i=1;
+    while (true) {
+
+        currZ = prevZ + pow(10, -n);
+        currR = modf((prevR / currZ) + M_PI, &temp);
+        
+        if (map.count(currR) > 0) {
+            resL.push_back(i);
+            resL.push_back(resL[0] - map[currR]);
+            return resL;
+        }
+            
+        map.insert(pair<float, int>(currR,i));
+
+        
+        prevZ = currZ;
+        prevR = currR;
+        i++;
+        
+
+    }
+
 }
 
 double expectedVal(double z0, double R0, int n, int iter) {
@@ -138,7 +174,9 @@ int main()
     int iter = 1000;
 
     cout << "Результаты тестов при \nz0 = " << z0 << "\nR0 = " << R0 << "\nn = " << n << "\nКоличестве итераций равным " << iter << ", при разбиении " << split << endl << endl;
-
+    vector<int> res = find_l(z0, R0, n);
+    cout << "L: " << res.at(0) << endl;
+    cout << "l: " << res.at(1) << endl;
     cout << "Мат. Ожидание: " << expectedVal(z0, R0, n, iter) << endl<<endl;
     cout << "Дисперсия: " << dispersion(z0, R0, n, iter)<<endl << endl;
     cout << "Частотное распределение: " << endl;
