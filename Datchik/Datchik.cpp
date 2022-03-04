@@ -2,11 +2,13 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <map>
 #include <vector>
+#include <string>
 //#define M_PI
 using namespace std;
 
@@ -145,6 +147,41 @@ int* freqDiag(double z0, double R0, int n, int iter, int split) {
 
 }
 
+vector<vector<int>> star_sky(double z0, double R0, int n, int iter, int split) {
+
+    vector<vector<int>> freq;
+    for (int k = 0; k < split; k++){
+
+        freq.push_back(vector<int>(split, 0));
+    }
+
+    double prevR = R0;
+    double currR;
+    double currZ;
+    double prevZ = z0;
+    double temp = 0;
+
+    for (unsigned int i = 1; i < iter/2; i++) {
+
+        currZ = prevZ + pow(10, -n);
+        currR = modf((prevR / currZ) + M_PI, &temp);
+        prevZ = currZ;
+        prevR = currR;
+
+        currZ = prevZ + pow(10, -n);
+        currR = modf((prevR / currZ) + M_PI, &temp);
+        prevZ = currZ;
+
+        freq.at((int)(prevR * split)).at((int)(currR * split))++;
+
+        prevR = currR;
+
+    }
+
+    return freq;
+
+}
+
 double hyDiag(double z0, double R0, int n, int iter, int split) {
 
     int *freq = freqDiag(z0, R0, n, iter, split);
@@ -169,9 +206,9 @@ int main()
 
     int split=20;
     double z0 = 0.011;
-    double R0 = 0;
-    int n = 4;
-    int iter = 1000;
+    double R0 = 0.03;
+    int n = 10;
+    int iter = 2000;
 
     cout << "Результаты тестов при \nz0 = " << z0 << "\nR0 = " << R0 << "\nn = " << n << "\nКоличестве итераций равным " << iter << ", при разбиении " << split << endl << endl;
     vector<int> res = find_l(z0, R0, n);
@@ -180,14 +217,38 @@ int main()
     cout << "Мат. Ожидание: " << expectedVal(z0, R0, n, iter) << endl<<endl;
     cout << "Дисперсия: " << dispersion(z0, R0, n, iter)<<endl << endl;
     cout << "Частотное распределение: " << endl;
-
+    string hist;
     int* freq = freqDiag(z0, R0, n, iter, split);
     for (int i = 0; i < split; i++) {
 
         cout << (double)i / split << " " << freq[i] << endl;
+        hist.append(to_string(freq[i]));
+        hist.append("\n");
     }
+    ofstream file("output.txt");
+    file << hist;
+    file.close();
     cout << endl;
     cout<<"Хи квадрат: "<<hyDiag(z0, R0, n, iter, split);
 
+    split = split / 4;
+    vector<vector<int>> star = star_sky(z0, R0, n, iter, split);
+
+    string starstr;
+    for (int i = 0; i < split; i++) {
+        for (int j = 0; j < split; j++) {
+
+            starstr.append(to_string(i));
+            starstr.append(",");
+            starstr.append(to_string(j));
+            starstr.append(",");
+            starstr.append(to_string(star.at(i).at(j)));
+            starstr.append("\n");
+
+        }
+    }
+    ofstream file2("star.txt");
+    file2 << starstr;
+    file2.close();
     
 }

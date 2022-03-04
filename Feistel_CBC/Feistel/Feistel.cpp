@@ -139,6 +139,19 @@ uchar* FeistelEncryption(uchar*message, int *mem, ull key, int roundCount, ull v
 
 	}
 
+	/*for (int i = 0; i < needToAdd; i++) {
+
+		newMessage[i] = 0;
+
+
+	}
+
+	for (int i = needToAdd; i < *mem; i++) {
+	
+		newMessage[i] = message[i];
+
+	}*/
+
 
 	int blockCount = *mem / 8;
 
